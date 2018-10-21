@@ -1,0 +1,2 @@
+public class DBQuery {
+}
