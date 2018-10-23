@@ -61,7 +61,7 @@ public class DBQuery extends WildLifeAbstract {
         this.location = location;
     }
 
-    public void setRanger(String rangerid) {
+    public void setRangerid(String rangerid) {
         this.rangerid = rangerid;
     }
 
@@ -130,7 +130,7 @@ public class DBQuery extends WildLifeAbstract {
         try(Connection connection = DBConnection.sql2owild.open()){
             String sql = "DELETE FROM ranger WHERE rangerid=:rangerid";
             connection.createQuery(sql)
-                    .addParameter("stylistid",rangerid.getRangerid())
+                    .addParameter("rangerid",rangerid.getRangerid())
                     .executeUpdate();
 
         }

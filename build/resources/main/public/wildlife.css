@@ -14,3 +14,10 @@ border-radius:3px;
 opacity:0.9;
 width:50%;
 }
+.wrong{
+background-color:white;
+border-radius:3px;
+opacity:0.9;
+width:20%;
+padding:5%;
+}
