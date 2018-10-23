@@ -1,3 +1,4 @@
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sql2o.Connection;
@@ -14,7 +15,13 @@ public class wildlifetracker_Test {
     assertEquals(DataProperties.all().get(0), dataProperties);
 }
 
-
+    @After
+    public void tearDown(){
+        try(Connection connection = DBConnection.sql2o.open()){
+            String sql = "DELETE FROM sightings *";
+            connection.createQuery(sql).executeUpdate();
+        }
+    }
 
 
 
