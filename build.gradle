@@ -3,6 +3,7 @@ plugins {
     id 'application'
 }
 
+
 group 'com.wildlife.project'
 version '1.0-SNAPSHOT'
 mainClassName = "wildlifetracker"
