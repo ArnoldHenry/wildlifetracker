@@ -15,6 +15,12 @@ public class DBQuery extends WildLifeAbstract {
     public String getGender() {
         return gender;
     }
+    public void setAnimalname(String animalname) {
+        this.animalname = animalname;
+    }
+    public String getAnimalname() {
+        return animalname;
+    }
     public String getFname() {
         return fname;
     }
@@ -71,13 +77,15 @@ public class DBQuery extends WildLifeAbstract {
         this.age = age;
     }
 
-    public void savesightings(){
+    public void savesightings(DBQuery sighting){
         try (Connection connection = DBConnection.sql2o.open()){
-            String sql = "INSERT INTO sightings(location,age,ranger)VALUES(:location,:age,:ranger)";
+            String sql = "INSERT INTO sightings(rangerid,animalname,location,age,health)VALUES(:rangerid,:animalname,:location,:age,:health)";
             connection.createQuery(sql)
-                    .addParameter("location",this.location)
-                    .addParameter("age",this.age)
-                    .addParameter("ranger",this.ranger)
+                    .addParameter("rangerid",sighting.getRanger())
+                    .addParameter("animalname",sighting.getAnimalname())
+                    .addParameter("location",sighting.getLocation())
+                    .addParameter("age",sighting.getAge())
+                    .addParameter("health",sighting.getHealth())
                     .executeUpdate();
 
         }
@@ -85,8 +93,8 @@ public class DBQuery extends WildLifeAbstract {
     //save ranger details
     public void saveranger(DBQuery ranger) {
         try (Connection connection = DBConnection.sql2owild.open()) {
-            String newdata = "INSERT INTO customer(fname,sname,lname,mobile,gender,email,customerid,stylistid)" +
-                    "VALUES(:fname,:sname,:lname,:mobile,:gender,:email,:customerid,:stylistid)";
+            String newdata = "INSERT INTO ranger(rangerid,fname,sname,gender)" +
+                    "VALUES(:rangerid,:fname,:sname,:gender,:gender)";
             connection.createQuery(newdata)
                     .addParameter("rangerid", ranger.getRanger())
                     .addParameter("fname", ranger.getFname())

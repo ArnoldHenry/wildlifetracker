@@ -26,6 +26,11 @@ public class wildlifetracker {
         staticFileLocation ("/public");
         DBQuery dbQuery = new DBQuery();
 
+        get("/rangerform",(request,response)->{
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template","/templates/rangerform.vtl");
+            return new ModelAndView(model,layout);
+        },new VelocityTemplateEngine());
 
         get("/rangerview",(request,response)->{
             Map<String,Object> model = new HashMap<String,Object>();
@@ -45,39 +50,27 @@ public class wildlifetracker {
             dbQuery.setName(sname);
             String gender = request.queryParams("gender");
             dbQuery.setGender(gender);
-            dbQuery.save(dbQuery);
-
-                model.put("template","/templates/stylistregform.vtl");
-                model.put("stylstcust",HairSalonDB.stylistcustomers(hairdp));
-                model.put("template","/templates/stylistpage.vtl");
-                model.put("template","/templates/caution.vtl");
-            model.put("stylists",HairSalonDB.allstylist());
+            dbQuery.saveranger(dbQuery);
+//            response.redirect("/update");
+            model.put("template","/templates/success.vtl");
             return new ModelAndView(model,layout);
         }),new VelocityTemplateEngine());
 
 
-        post("/stylistform",(request,response)->{
+        post("/sightingform",(request,response)->{
             Map<String,Object> model = new HashMap<String,Object>();
 
-            String stylistid = request.queryParams("stylistid");
-            hairdp.setStylistid(stylistid);
-            String fname = request.queryParams("fname");
-            hairdp.setFname(fname);
-            String sname = request.queryParams("sname");
-            hairdp.setSname(sname);
-            String lname = request.queryParams("lname");
-            hairdp.setLname(lname);
-            Integer mobile = Integer.parseInt (request.queryParams("mobile"));
-            hairdp.setMobile(mobile);
-            String gender = request.queryParams("gender");
-            hairdp.setGender(gender);
-            String email = request.queryParams("email");
-            hairdp.setEmail(email);
-            String password = request.queryParams("password");
-            byte[] pass = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-            hairdp.setPassword(Arrays.toString(pass));
-
-            hb.savestylist(hairdp);
+            String rangerid = request.queryParams("rangerid");
+            dbQuery.setRanger(rangerid);
+            String animalname = request.queryParams("animalname");
+            dbQuery.setAnimalname(animalname);
+            String location = request.queryParams("location");
+            dbQuery.setLocation(location);
+            String age = request.queryParams("age");
+            dbQuery.setAge(Integer.parseInt(age));
+            String health = request.queryParams("health");
+            dbQuery.setHealth(health);
+            dbQuery.savesightings(dbQuery);
             response.redirect("/backhome");
 
             return new  ModelAndView(model,layout);
