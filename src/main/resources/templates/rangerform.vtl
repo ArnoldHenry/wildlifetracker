@@ -1,13 +1,10 @@
-<link rel="stylesheet" href="/hairsalon.css" type="text/css">
+<link rel="stylesheet" href="/wildlife.css" type="text/css">
 <div class="container forms">
 <div class="row" style="padding:1%;">
 <div class="col-sm-6">
-     <a href="/viewdata" class="btn btn-primary">ViewData</a>
+     <a href="/viewdata" class="btn btn-primary">View List</a>
 </div>
 <br/>
-<div class="col-sm-6">
- <a href="/viewranger class="btn btn-primary">View Ranger</a>
-</div>
 </div>
 
 <div class="row">
@@ -34,9 +31,15 @@
 <div class="col-md-6">
 <form action="/sightingform" method="post">
     <h2>Sightings Form</h2>
-    <div class="form-group">
-        <input name="rangerid" style="width:100%;" class="form-control" type="text" id="rangerid" placeholder="Enter Ranger ID"/>
-    </div>
+         <div class="form-group">
+             <label for="sel1">Select Your ID</label>
+             <select class="form-control" name="rangerid" id="rangerid">
+               <option value="">Select ID</option>
+              #foreach ($rang in $ranger)
+              <option value="$rang.getRangerid()">$rang.getFname()&nbsp$rang.getSname()</td>
+              #end
+             </select>
+       </div>
     <div class="form-group">
         <input name="animalname" style="width:100%;" class="form-control" type="text" id="animalname" placeholder="Animal Name"/>
     </div>
@@ -52,9 +55,9 @@
                     <option value="ill">Ill</td>
                     <option value="ok">Ok</td>
             </select>
-
+<br>
         <div class="form-group">
-                <button type="submit" name="submit" class="btn btn-success">Register Customer</button>
+                <button type="submit" name="submit" class="btn btn-success">Submit</button>
         </div>
 </form>
 
@@ -74,19 +77,6 @@
                         </div>
                     </form>
             </div>
-
-            <h2>Delete Animal</h2>
-                    <div class="col-sm-6">
-                            <form method="post" action="/delanimal">
-                                <div class="form-group">
-                                    <input type="text" placeholder="Enter Animal ID" name="delanimal" id="delanimal" class="form-control" required>
-                                </div>
-                                <br>
-                                <div class="form-group">
-                                   <button type="submit" name="submit" class="btn btn-danger" required>Delete Animal</button>
-                                </div>
-                            </form>
-                    </div>
         </div>
 <div>
 </div>

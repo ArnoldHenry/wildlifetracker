@@ -1,7 +1,7 @@
 public abstract class WildLifeAbstract {
     public String name;
     public String location;
-    public String ranger;
+    public String rangerid;
     public String health;
     public String fname;
     public String sname;

@@ -8,7 +8,7 @@ public class DataProperties extends WildLifeAbstract {
     public DataProperties(String location, int age, String ranger) {
         this.location = location;
         this.age = age;
-        this.ranger =ranger;
+        this.rangerid =ranger;
 
     }
 
@@ -21,7 +21,7 @@ public class DataProperties extends WildLifeAbstract {
     }
 
     public String getRanger() {
-        return ranger;
+        return rangerid;
     }
 
     public String getHealth() {
@@ -45,7 +45,7 @@ public class DataProperties extends WildLifeAbstract {
     }
 
     public void setRanger(String ranger) {
-        this.ranger = ranger;
+        this.rangerid = ranger;
     }
 
     public void setHealth(String health) {
@@ -66,7 +66,7 @@ public class DataProperties extends WildLifeAbstract {
             connection.createQuery(sql)
                     .addParameter("location",this.location)
                     .addParameter("age",this.age)
-                    .addParameter("ranger",this.ranger)
+                    .addParameter("ranger",this.rangerid)
                     .executeUpdate();
 
         }

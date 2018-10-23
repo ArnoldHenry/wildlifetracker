@@ -5,37 +5,40 @@ import java.util.Map;
 import static spark.Spark.*;
 import static spark.Spark.get;
 import static spark.Spark.post;
+import static spark.debug.DebugScreen.enableDebugScreen;
 
 public class wildlifetracker {
     public static void main(String[] args) {
-        ProcessBuilder process = new ProcessBuilder();
-        Integer port;
-        if (process.environment().get("PORT") != null) {
-            port = Integer.parseInt(process.environment().get("PORT"));
-        } else {
-            port = 4567;
-        }
-
-        setPort(port);
+//        ProcessBuilder process = new ProcessBuilder();
+//        Integer port;
+//        if (process.environment().get("PORT") != null) {
+//            port = Integer.parseInt(process.environment().get("PORT"));
+//        } else {
+//            port = 4567;
+//        }
+//
+//        setPort(port);
 
         String layout = "templates/layout.vtl";
         staticFileLocation ("/public");
+        enableDebugScreen();
         DBQuery dbQuery = new DBQuery();
 
-        get("/rangerform",(request,response)->{
+        get("/backhome",(request,response)->{
             Map<String,Object> model = new HashMap<String,Object>();
             model.put("template","/templates/rangerform.vtl");
+
             return new ModelAndView(model,layout);
         },new VelocityTemplateEngine());
 
-        get("/rangerview",(request,response)->{
+        get("/",(request,response)->{
             Map<String,Object> model = new HashMap<String,Object>();
-            model.put("template","/templates/rangerform.vtl");
-            model.put("stylists",DBQuery.allranger());
+            model.put("template","templates/rangerform.vtl");
+            model.put("ranger",DBQuery.rangers());
             return new ModelAndView(model,layout);
         },new VelocityTemplateEngine());
 
-        post("/",((request, response) ->{
+        post("/rangerform",((request, response) ->{
             Map<String,Object> model = new HashMap<String,Object>();
 
             String rangerid = request.queryParams("rangerid");
@@ -43,7 +46,7 @@ public class wildlifetracker {
             String fname = request.queryParams("fname");
             dbQuery.setFname(fname);
             String sname = request.queryParams("sname");
-            dbQuery.setName(sname);
+            dbQuery.setSname(sname);
             String gender = request.queryParams("gender");
             dbQuery.setGender(gender);
             dbQuery.saveranger(dbQuery);
@@ -67,23 +70,25 @@ public class wildlifetracker {
             String health = request.queryParams("health");
             dbQuery.setHealth(health);
             dbQuery.savesightings(dbQuery);
-            response.redirect("/backhome");
-
+//            response.redirect("/backhome");
+            model.put("template","/templates/success.vtl");
             return new  ModelAndView(model,layout);
         },new VelocityTemplateEngine());
 
-
-        post("/viewdata",(request,response)->{
+        get("/rangerview",(request,response)->{
             Map<String,Object> model = new HashMap<String,Object>();
-
-            try{
-                model.put("allranger",DBQuery.allranger());
-                model.put("template","/templates/viewdata.vtl");
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-            }
+            model.put("template","/templates/rangerform.vtl");
+            model.put("stylists",DBQuery.allranger());
+            return new ModelAndView(model,layout);
+        },new VelocityTemplateEngine());
 
 
+
+        get("/viewdata",(request,response)->{
+            Map<String,Object> model = new HashMap<String,Object>();
+            model.put("template","/templates/viewdata.vtl");
+            model.put("allranger",DBQuery.allranger());
+            model.put("ranger",DBQuery.rangers());
             return new  ModelAndView(model,layout);
         },new VelocityTemplateEngine());
 
@@ -99,9 +104,28 @@ public class wildlifetracker {
             return new ModelAndView(model,layout);
         }, new VelocityTemplateEngine());
 
+        post("/delranger",(request,response)->{
+            Map<String,Object> model = new HashMap<String,Object>();
+            try{
+                String delranger = request.queryParams("delranger");
+                dbQuery.setRanger(delranger);
+                String df = DBQuery.selectranger(dbQuery);
+                if ( df != null) {
+                    dbQuery.delranger(dbQuery);
+                    response.redirect("/backhome");
+                } else{
+                    model.put("templates","/templates/delranger.vtl");
+                }
+
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+            return new ModelAndView(model,layout);
+        }, new VelocityTemplateEngine());
+
 //        get("/update",(request,response)->{
 //            Map<String,Object> model = new HashMap<String,Object>();
-//            model.put("template","/templates/updatefile.vtl");
+//            model.put("templates","/templates/updatefile.vtl");
 //            model.put("stylists",HairSalonDB.allstylist());
 //            try{
 //            }catch(Exception e){
@@ -128,12 +152,12 @@ public class wildlifetracker {
 //                if (df.equals(stylistid)) {
 //                    hb.updatestylist(hairdp);
 //                }else{
-//                    model.put("template","/templates/notexist.vtl");
+//                    model.put("templates","/templates/notexist.vtl");
 //                }
 //
 //                response.redirect("/update");
 //            }catch(Exception e){
-//                model.put("template","/templates/notexist.vtl");
+//                model.put("templates","/templates/notexist.vtl");
 //                System.out.println(e.getMessage());
 //            }
 //            return new ModelAndView(model,layout);
@@ -156,14 +180,14 @@ public class wildlifetracker {
 //                if (df.equals(clientid)) {
 //                    hb.updateclient(hairdp);
 //                }else{
-//                    model.put("template","/templates/notexist.vtl");
+//                    model.put("templates","/templates/notexist.vtl");
 //                }
 //
 //
 //                response.redirect("/update");
 //            }catch(Exception e){
 //                System.out.println(e.getMessage());
-//                model.put("template","/templates/notexist.vtl");
+//                model.put("templates","/templates/notexist.vtl");
 //            }
 //            return new ModelAndView(model,layout);
 //        }, new VelocityTemplateEngine());
@@ -179,7 +203,7 @@ public class wildlifetracker {
 //                    hb.delcustomer(hairdp);
 //                    response.redirect("/backhome");
 //                } else{
-//                    model.put("template","/templates/delnot.vtl");
+//                    model.put("templates","/templates/delnot.vtl");
 //                }
 //
 //            }catch(Exception e){
@@ -192,26 +216,6 @@ public class wildlifetracker {
 //
 //
 //
-//        post("/delanimal",(request,response)->{
-//            Map<String,Object> model = new HashMap<String,Object>();
-//            try{
-//                String stylistid = request.queryParams("delstylist");
-//                hairdp.setStylistid(stylistid);
-//                String df = HairSalonDB.select(hairdp);
-//                if ( df != null) {
-//                    hb.delstylist(hairdp);
-//                    response.redirect("/backhome");
-//                } else{
-//                    model.put("template","/templates/delnot.vtl");
-//                    System.out.println(HairSalonDB.select(hairdp));
-//                }
-//
-//            }catch(Exception e){
-//                System.out.println(e.getMessage());
-//            }
-//
-//
-//            return new ModelAndView(model,layout);
-//        }, new VelocityTemplateEngine());
+
     }
 }

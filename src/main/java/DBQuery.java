@@ -37,8 +37,8 @@ public class DBQuery extends WildLifeAbstract {
         return location;
     }
 
-    public String getRanger() {
-        return ranger;
+    public String getRangerid() {
+        return rangerid;
     }
 
     public String getHealth() {
@@ -61,8 +61,8 @@ public class DBQuery extends WildLifeAbstract {
         this.location = location;
     }
 
-    public void setRanger(String ranger) {
-        this.ranger = ranger;
+    public void setRanger(String rangerid) {
+        this.rangerid = rangerid;
     }
 
     public void setHealth(String health) {
@@ -78,10 +78,10 @@ public class DBQuery extends WildLifeAbstract {
     }
 
     public void savesightings(DBQuery sighting){
-        try (Connection connection = DBConnection.sql2o.open()){
+        try (Connection connection = DBConnection.sql2owild.open()){
             String sql = "INSERT INTO sightings(rangerid,animalname,location,age,health)VALUES(:rangerid,:animalname,:location,:age,:health)";
             connection.createQuery(sql)
-                    .addParameter("rangerid",sighting.getRanger())
+                    .addParameter("rangerid",sighting.getRangerid())
                     .addParameter("animalname",sighting.getAnimalname())
                     .addParameter("location",sighting.getLocation())
                     .addParameter("age",sighting.getAge())
@@ -94,9 +94,9 @@ public class DBQuery extends WildLifeAbstract {
     public void saveranger(DBQuery ranger) {
         try (Connection connection = DBConnection.sql2owild.open()) {
             String newdata = "INSERT INTO ranger(rangerid,fname,sname,gender)" +
-                    "VALUES(:rangerid,:fname,:sname,:gender,:gender)";
+                    "VALUES(:rangerid,:fname,:sname,:gender)";
             connection.createQuery(newdata)
-                    .addParameter("rangerid", ranger.getRanger())
+                    .addParameter("rangerid", ranger.getRangerid())
                     .addParameter("fname", ranger.getFname())
                     .addParameter("sname", ranger.getSname())
                     .addParameter("gender", ranger.getGender())
@@ -104,16 +104,35 @@ public class DBQuery extends WildLifeAbstract {
         }
     }
 
-    public static List<DataProperties> allranger() {
-        String sql = "SELECT rangerid,animalname,location,age,health FROM sightings";
-        try(Connection con = DBConnection.sql2o.open()) {
-            return con.createQuery(sql).executeAndFetch(DataProperties.class);
+    public static List<DBQuery> allranger() {
+        String sql = "SELECT * FROM sightings";
+        try(Connection con = DBConnection.sql2owild.open()) {
+            return con.createQuery(sql).executeAndFetch(DBQuery.class);
         }
     }
-    public static List<DataProperties> rangers() {
-        String sql = "SELECT rangerid,fname,sname FROM ranger";
-        try(Connection con = DBConnection.sql2o.open()) {
-            return con.createQuery(sql).executeAndFetch(DataProperties.class);
+    public static List<DBQuery> rangers() {
+        String sql = "SELECT * FROM ranger";
+        try(Connection con = DBConnection.sql2owild.open()) {
+            return con.createQuery(sql)
+                    .executeAndFetch(DBQuery.class);
+        }
+    }
+    public static String selectranger(DBQuery idcheck) {
+        try(Connection con = DBConnection.sql2owild.open()) {
+            String sql = "SELECT rangerid FROM ranger WHERE rangerid=:rangerid";
+            String idranger = con.createQuery(sql)
+                    .addParameter("rangerid",idcheck.getRangerid())
+                    .executeScalar(String.class);
+            return idranger;
+        }
+    }
+    public void delranger(DBQuery rangerid){
+        try(Connection connection = DBConnection.sql2owild.open()){
+            String sql = "DELETE FROM ranger WHERE rangerid=:rangerid";
+            connection.createQuery(sql)
+                    .addParameter("stylistid",rangerid.getRangerid())
+                    .executeUpdate();
+
         }
     }
 
@@ -122,10 +141,12 @@ public class DBQuery extends WildLifeAbstract {
         if (!(otherTask instanceof DataProperties)) {
             return false;
         } else {
-            DataProperties newTask = (DataProperties) otherTask;
+            DBQuery newTask = (DBQuery) otherTask;
             return  this.getLocation().equals(newTask.getLocation())&&
                     this.getAge().equals(newTask.getAge())&&
-                    this.getRanger().equals(newTask.getRanger());
+                    this.getFname().equals(newTask.getFname())&&
+                    this.getSname().equals(newTask.getSname())&&
+                    this.getRangerid().equals(newTask.getRangerid());
         }
     }
 }

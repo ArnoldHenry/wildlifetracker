@@ -1,4 +1,4 @@
-//package spark.template.velocity;
+//package spark.templates.velocity;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;

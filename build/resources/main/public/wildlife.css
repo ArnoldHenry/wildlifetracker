@@ -1,0 +1,16 @@
+body{
+margin-top:1%;
+background-image:url("/img/monkey.jpg");
+background-size:cover;
+}
+.forms{
+background-color:white;
+border-radius:3px;
+opacity:0.9;
+}
+.formlogin{
+background-color:white;
+border-radius:3px;
+opacity:0.9;
+width:50%;
+}
