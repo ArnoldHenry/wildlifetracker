@@ -15,7 +15,7 @@ Get to the link below and test the app. Database creation will is as below;
 * create table animals (id serial primary key,name text,location varchar,age int,health text);
 * create table sightings (id serial primary key,location varchar,age int,ranger text);
 
-[Wildlife Tracker](https://wildlife254.herokuapp.com/)
+[Wildlife Tracker](https://wildlife25.herokuapp.com/)
 ## Known Bugs
 No bugs
 ## Technologies Used
