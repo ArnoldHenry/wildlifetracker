@@ -105,6 +105,12 @@ public class DBQuery extends WildLifeAbstract {
     }
 
     public static List<DataProperties> allranger() {
+        String sql = "SELECT rangerid,animalname,location,age,health FROM sightings";
+        try(Connection con = DBConnection.sql2o.open()) {
+            return con.createQuery(sql).executeAndFetch(DataProperties.class);
+        }
+    }
+    public static List<DataProperties> all() {
         String sql = "SELECT location,age,ranger FROM sightings";
         try(Connection con = DBConnection.sql2o.open()) {
             return con.createQuery(sql).executeAndFetch(DataProperties.class);

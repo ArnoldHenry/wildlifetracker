@@ -76,28 +76,17 @@ public class wildlifetracker {
             return new  ModelAndView(model,layout);
         },new VelocityTemplateEngine());
 
-        post("/customer",(request,response)->{
+
+        post("/viewdata",(request,response)->{
             Map<String,Object> model = new HashMap<String,Object>();
 
-            String fname = request.queryParams("fname");
-            hairdp.setFname(fname);
-            String sname = request.queryParams("sname");
-            hairdp.setSname(sname);
-            String lname = request.queryParams("lname");
-            hairdp.setLname(lname);
-            Integer mobile = Integer.parseInt(request.queryParams("mobile"));
-            hairdp.setMobile(mobile);
-            String gender = request.queryParams("gender");
-            hairdp.setGender(gender);
-            String email = request.queryParams("email");
-            hairdp.setEmail(email);
-            String customerid = request.queryParams("clientid");
-            hairdp.setCustomerid(customerid);
-            String stylistid = request.queryParams("stylistid");
-            hairdp.setStylistid(stylistid);
+            try{
+                model.put("stylists",DBQuery.allranger());
+                model.put("template","/templates/viewdata.vtl");
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+            }
 
-            hb.savecustomer(hairdp);
-            response.redirect("/backhome");
 
             return new  ModelAndView(model,layout);
         },new VelocityTemplateEngine());
