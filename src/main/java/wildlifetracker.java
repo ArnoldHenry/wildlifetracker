@@ -1,8 +1,4 @@
 import spark.ModelAndView;
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,7 +77,7 @@ public class wildlifetracker {
             Map<String,Object> model = new HashMap<String,Object>();
 
             try{
-                model.put("stylists",DBQuery.allranger());
+                model.put("allranger",DBQuery.allranger());
                 model.put("template","/templates/viewdata.vtl");
             }catch(Exception e){
                 System.out.println(e.getMessage());
@@ -91,157 +87,131 @@ public class wildlifetracker {
             return new  ModelAndView(model,layout);
         },new VelocityTemplateEngine());
 
-        get("/viewstylist",(request,response)->{
+
+        get("/viewrangers",(request,response)->{
             Map<String,Object> model = new HashMap<String,Object>();
             try{
-                model.put("stylists",HairSalonDB.all());
-                model.put("template","/templates/records.vtl");
+                model.put("ranger",DBQuery.rangers());
+                model.put("template","/templates/viewdata.vtl");
             }catch(Exception e){
                 System.out.println(e.getMessage());
             }
             return new ModelAndView(model,layout);
         }, new VelocityTemplateEngine());
 
-        get("/viewcustomers",(request,response)->{
-            Map<String,Object> model = new HashMap<String,Object>();
-            try{
-                model.put("customers",HairSalonDB.allcustomers());
-                model.put("template","/templates/customers.vtl");
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-            }
-            return new ModelAndView(model,layout);
-        }, new VelocityTemplateEngine());
-
-        //go to update page
-
-        get("/update",(request,response)->{
-            Map<String,Object> model = new HashMap<String,Object>();
-            model.put("template","/templates/updatefile.vtl");
-            model.put("stylists",HairSalonDB.allstylist());
-            try{
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-            }
-            return new ModelAndView(model,layout);
-        }, new VelocityTemplateEngine());
-
-        //update stylist
-        post("/updatestylist",(request,response)->{
-            Map<String,Object> model = new HashMap<String,Object>();
-            model.put("stylists",HairSalonDB.allstylist());
-            String stylistid = request.queryParams("stylistid");
-            hairdp.setStylistid(stylistid);
-            Integer mobile = Integer.parseInt (request.queryParams("mobile"));
-            hairdp.setMobile(mobile);
-            String email = request.queryParams("email");
-            hairdp.setEmail(email);
-            String password = request.queryParams("password");
-            byte[] pass = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-            hairdp.setPassword(Arrays.toString(pass));
-            String df = HairSalonDB.select(hairdp);
-            try{
-                if (df.equals(stylistid)) {
-                    hb.updatestylist(hairdp);
-                }else{
-                    model.put("template","/templates/notexist.vtl");
-                }
-
-                response.redirect("/update");
-            }catch(Exception e){
-                model.put("template","/templates/notexist.vtl");
-                System.out.println(e.getMessage());
-            }
-            return new ModelAndView(model,layout);
-        }, new VelocityTemplateEngine());
-
-        //update customer
-        post("/updatecustomer",(request,response)->{
-            Map<String,Object> model = new HashMap<String,Object>();
-            model.put("stylists",HairSalonDB.allstylist());
-            Integer mobile = Integer.parseInt (request.queryParams("mobile"));
-            hairdp.setMobile(mobile);
-            String email = request.queryParams("email");
-            hairdp.setEmail(email);
-            String clientid = request.queryParams("clientid");
-            hairdp.setCustomerid(clientid);
-            String stylistid = request.queryParams("stylistid");
-            hairdp.setStylistid(stylistid);
-            String df = HairSalonDB.selectcustomer(hairdp);
-            try{
-                if (df.equals(clientid)) {
-                    hb.updateclient(hairdp);
-                }else{
-                    model.put("template","/templates/notexist.vtl");
-                }
-
-
-                response.redirect("/update");
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-                model.put("template","/templates/notexist.vtl");
-            }
-            return new ModelAndView(model,layout);
-        }, new VelocityTemplateEngine());
-
-//view stylist customers
-
-        get("/stylistcustomers",(request,response)->{
-            Map<String,Object> model = new HashMap<String,Object>();
-
-            try{
-//                model.put("customers",HairSalonDB.stylistcustomers());
-                model.put("template","/templates/stylistpage.vtl");
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-            }
-            return new ModelAndView(model,layout);
-        }, new VelocityTemplateEngine());
-
-
-        post("/delcustomer",(request,response)->{
-            Map<String,Object> model = new HashMap<String,Object>();
-            try{
-                String customerid = request.queryParams("delcustomer");
-                hairdp.setCustomerid(customerid);
-                String df = HairSalonDB.selectcustomer(hairdp);
-                if ( df != null) {
-                    hb.delcustomer(hairdp);
-                    response.redirect("/backhome");
-                } else{
-                    model.put("template","/templates/delnot.vtl");
-                }
-
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-            }
-
-
-            return new ModelAndView(model,layout);
-        }, new VelocityTemplateEngine());
-
-
-
-        post("/delstylist",(request,response)->{
-            Map<String,Object> model = new HashMap<String,Object>();
-            try{
-                String stylistid = request.queryParams("delstylist");
-                hairdp.setStylistid(stylistid);
-                String df = HairSalonDB.select(hairdp);
-                if ( df != null) {
-                    hb.delstylist(hairdp);
-                    response.redirect("/backhome");
-                } else{
-                    model.put("template","/templates/delnot.vtl");
-                    System.out.println(HairSalonDB.select(hairdp));
-                }
-
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-            }
-
-
-            return new ModelAndView(model,layout);
-        }, new VelocityTemplateEngine());
+//        get("/update",(request,response)->{
+//            Map<String,Object> model = new HashMap<String,Object>();
+//            model.put("template","/templates/updatefile.vtl");
+//            model.put("stylists",HairSalonDB.allstylist());
+//            try{
+//            }catch(Exception e){
+//                System.out.println(e.getMessage());
+//            }
+//            return new ModelAndView(model,layout);
+//        }, new VelocityTemplateEngine());
+//
+//        //update stylist
+//        post("/updateranger",(request,response)->{
+//            Map<String,Object> model = new HashMap<String,Object>();
+//            model.put("stylists",HairSalonDB.allstylist());
+//            String stylistid = request.queryParams("stylistid");
+//            hairdp.setStylistid(stylistid);
+//            Integer mobile = Integer.parseInt (request.queryParams("mobile"));
+//            hairdp.setMobile(mobile);
+//            String email = request.queryParams("email");
+//            hairdp.setEmail(email);
+//            String password = request.queryParams("password");
+//            byte[] pass = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+//            hairdp.setPassword(Arrays.toString(pass));
+//            String df = HairSalonDB.select(hairdp);
+//            try{
+//                if (df.equals(stylistid)) {
+//                    hb.updatestylist(hairdp);
+//                }else{
+//                    model.put("template","/templates/notexist.vtl");
+//                }
+//
+//                response.redirect("/update");
+//            }catch(Exception e){
+//                model.put("template","/templates/notexist.vtl");
+//                System.out.println(e.getMessage());
+//            }
+//            return new ModelAndView(model,layout);
+//        }, new VelocityTemplateEngine());
+//
+//        //update customer
+//        post("/updateanimal",(request,response)->{
+//            Map<String,Object> model = new HashMap<String,Object>();
+//            model.put("stylists",HairSalonDB.allstylist());
+//            Integer mobile = Integer.parseInt (request.queryParams("mobile"));
+//            hairdp.setMobile(mobile);
+//            String email = request.queryParams("email");
+//            hairdp.setEmail(email);
+//            String clientid = request.queryParams("clientid");
+//            hairdp.setCustomerid(clientid);
+//            String stylistid = request.queryParams("stylistid");
+//            hairdp.setStylistid(stylistid);
+//            String df = HairSalonDB.selectcustomer(hairdp);
+//            try{
+//                if (df.equals(clientid)) {
+//                    hb.updateclient(hairdp);
+//                }else{
+//                    model.put("template","/templates/notexist.vtl");
+//                }
+//
+//
+//                response.redirect("/update");
+//            }catch(Exception e){
+//                System.out.println(e.getMessage());
+//                model.put("template","/templates/notexist.vtl");
+//            }
+//            return new ModelAndView(model,layout);
+//        }, new VelocityTemplateEngine());
+//
+////view stylist customers
+//        post("/delranger",(request,response)->{
+//            Map<String,Object> model = new HashMap<String,Object>();
+//            try{
+//                String customerid = request.queryParams("delcustomer");
+//                hairdp.setCustomerid(customerid);
+//                String df = HairSalonDB.selectcustomer(hairdp);
+//                if ( df != null) {
+//                    hb.delcustomer(hairdp);
+//                    response.redirect("/backhome");
+//                } else{
+//                    model.put("template","/templates/delnot.vtl");
+//                }
+//
+//            }catch(Exception e){
+//                System.out.println(e.getMessage());
+//            }
+//
+//
+//            return new ModelAndView(model,layout);
+//        }, new VelocityTemplateEngine());
+//
+//
+//
+//        post("/delanimal",(request,response)->{
+//            Map<String,Object> model = new HashMap<String,Object>();
+//            try{
+//                String stylistid = request.queryParams("delstylist");
+//                hairdp.setStylistid(stylistid);
+//                String df = HairSalonDB.select(hairdp);
+//                if ( df != null) {
+//                    hb.delstylist(hairdp);
+//                    response.redirect("/backhome");
+//                } else{
+//                    model.put("template","/templates/delnot.vtl");
+//                    System.out.println(HairSalonDB.select(hairdp));
+//                }
+//
+//            }catch(Exception e){
+//                System.out.println(e.getMessage());
+//            }
+//
+//
+//            return new ModelAndView(model,layout);
+//        }, new VelocityTemplateEngine());
     }
 }
